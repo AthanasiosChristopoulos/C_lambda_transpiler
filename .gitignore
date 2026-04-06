@@ -1,0 +1,7 @@
+generated/lex.yy.c
+generated/mycompiler
+generated/output
+generated/tuc_transpiler.tab.c
+generated/tuc_transpiler.tab.h
+
+.vscode
