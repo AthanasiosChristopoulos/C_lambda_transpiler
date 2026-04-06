@@ -1,14 +1,15 @@
 #!/bin/bash
 
-clear
-cd ..
-
-mkdir -p generated
 
 # INPUT_FILE="test_all.la"
 # INPUT_FILE="test.la"
 # INPUT_FILE="correct1.la"
 INPUT_FILE="correct2.la"
+
+clear
+cd ..
+
+mkdir -p generated
 
 SKIP_EXECUTION="$1"
 

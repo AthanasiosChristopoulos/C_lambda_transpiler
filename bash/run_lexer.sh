@@ -1,5 +1,7 @@
 #!/bin/bash
 
+INPUT_FILE="test_lexer.la"
+
 clear
 cd ..
 
@@ -24,6 +26,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "Running the program with test_lexer.la..."
+echo "Running the program with "$INPUT_FILE"..."
 
-./generated/mylexer < only_lexer_code/test_lexer.la
+./generated/mylexer < only_lexer_code/"$INPUT_FILE"
