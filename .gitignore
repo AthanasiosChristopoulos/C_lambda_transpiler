@@ -1,5 +1,6 @@
 generated/lex.yy.c
 generated/mycompiler
+generated/mylexer
 generated/output
 generated/tuc_transpiler.tab.c
 generated/tuc_transpiler.tab.h
