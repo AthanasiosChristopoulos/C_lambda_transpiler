@@ -1,0 +1,594 @@
+-- A piece of Theta code for demonstration purposes
+
+const N = 100: integer;
+
+a[100]: integer;
+
+def main(): 
+
+  for i in [0:N]:
+    a[i] = i;
+  endfor;
+
+  half := [ x / 2 for x: integer in a of 100] : scalar;
+  
+enddef;
+
+comp Address:
+  #street: str;
+  #number: integer;
+  #city: str;
+
+  def setAddress(s: str, n: integer, c: str):
+    #street = s;
+    #number = n;
+    #city = c;
+  enddef;
+
+  def printAddress():
+    write("Address: %s %d, %s\n", #street, #number, #city);    
+  enddef;
+endcomp;
+
+comp Person:
+  #firstName, #lastName: str;
+  #email: str;
+  #phone: integer;
+  #address: Address;
+
+  def setPerson(fn: str, ln: str, email: str, phone: integer, addr: Address):
+    #firstName = fn;
+    #lastName = ln;
+    #email = email;
+    #phone = phone;
+    #address = addr;
+  enddef;
+
+  def printPersonInfo():
+    write("%s %s, email: %s phone: %d\n", #firstName, #lastName, #email, #phone);
+    #address.printAddress();
+  enddef;
+
+endcomp;
+
+comp Book:
+
+  #title, #isbn: str;
+  #author: Person;  
+  #numOfCopies: integer;
+  #price: scalar;
+
+  def setBook(t: str, a: Person, numOfCopies: integer, price: scalar):
+    #title = t;
+    #author = a;
+    #numOfCopies = numOfCopies;
+    #price = price;
+  enddef;
+
+  def printBook():
+    write("Title: %s\n", #title);
+    writeStr("Author:");
+    #author.printPersonInfo();
+    write("Price:%f\n", #price);
+    write("Number of available copies: %d\n", #numOfCopies);    
+  enddef;
+endcomp;
+
+comp Order:
+  #orderNum: integer;
+  #book: Book;
+  #quantity: integer;
+  #shippingAddress: Address;
+  #delivered: bool;
+
+  def setOrder(orNum: integer, b: Book, q: integer, sh: Address, del: bool):
+    #orderNum = orNum;
+    #book = b;
+    #quantity = q;
+    #shippingAddress = sh;
+    #delivered = del;
+  enddef;
+
+
+
+endcomp;
+
+
+comp Bookstore:
+  #name: str;
+  #listOfBooks[100]: Book;
+  #numOfBooks: integer;
+  #listOfOrders[100]: Order;
+  #numOfOrders: integer;
+
+  def putOrder(o: Order):    
+    #listOfOrders[#numOfOrders] = o;
+    #numOfOrders += 1;
+  enddef;
+ 
+  def addBook(b: Book):    
+    #listOfBooks[#numOfBooks] = b;
+    #numOfBooks += 1;
+  enddef;
+
+  def printBookStoreBooks():
+    for i in [0 : #numOfBooks]:
+      #listOfBooks[i].printBook();
+    endfor;
+  enddef;
+
+  def calculateTotalOrdersIncome()-> scalar:     
+    total: scalar;
+    total = 0;
+
+    for i in [0 : #numOfOrders]:
+      if (#listOfOrders[i].#delivered):
+        total = total + #listOfOrders[i].#quantity * #listOfOrders[i].#book.#price;      
+      endif;
+    endfor;
+
+    return total;
+  enddef; 
+endcomp;
+
+orderId: integer;
+
+-- factory functions
+def createAddress(s: str, n: integer, c: str)-> Address:
+  a: Address;
+  a.setAddress(s, n, c);    
+  return a;
+enddef;
+
+def createPerson(fn: str, ln: str, email: str, phone: integer, addr: Address)-> Person:
+  p: Person;
+  p.setPerson(fn, ln, email, phone, addr);    
+  return p;
+enddef;
+
+def createBook(t: str, a: Person, numOfCopies: integer, price: scalar)-> Book:
+  b: Book;
+  b.setBook(t, a, numOfCopies, price);
+  return b;
+enddef;
+
+def createOrder(orNum: integer, b: Book, q: integer, sh: Address, del: bool)-> Order:
+  ord: Order;
+  ord.setOrder(orNum, b, q, sh, del);
+  return ord;
+enddef;
+
+def createBookstore(n: str)->Bookstore:
+  bs: Bookstore;
+  bs.#name = n;
+  bs.#numOfBooks = 0;
+  bs.#numOfOrders = 0;
+  
+  return bs;
+enddef;
+
+def main():
+  orderId = 0;
+
+  a, a1: Address;
+  a = createAddress("Stadiou", 10, "Stadiou");  
+
+  author: Person;
+  author = createPerson("Christos","Papadimitriou","cpap@gmail.com", 12345, a);   
+
+  b: Book;
+  b = createBook("Computation Theory", author, 34.3, 100);
+  
+  bs: Bookstore;
+  bs = createBookstore("Papasotiriou");
+  
+  bs.addBook(b);
+
+  a = createAddress("Wall Street", 10, "NY");
+  author = createPerson("Dennis", "Richie", "richie@gmail.com", 54321, a);
+  b = createBook("C Programming", author, 10.3, 100);  
+  bs.addBook(b);  
+
+  bs.printBookStoreBooks();
+
+  ord : Order;
+  ord = createOrder(orderId, b, 2, a, False );  
+  orderId +=  1;
+  
+  bs.putOrder(ord);
+  write("Bookstore orders income: %.2f\n", bs.calculateTotalOrdersIncome());
+
+enddef;
+
+limit, num, counter: integer;
+
+def prime(n: integer)-> bool: 
+   i: integer; 
+   result, isPrime: bool;
+      
+  if (n < 0): 
+    result = prime(-n);
+  else: 
+    if (n < 2): 
+      result = False;    
+    else: 
+      if (n == 2): 
+        result = True;
+      else: 
+        if (n % 2 == 0):
+          result = False;
+        else:  
+          i = 3;
+          isPrime = True;
+          while (isPrime and (i < n / 2) ): 
+            isPrime = n % i != 0;
+            i = i + 2;
+          endwhile;
+          result = isPrime;
+        endif;
+      endif;
+    endif;
+  endif;
+   
+  return result;
+enddef;
+
+def main(): 
+
+  limit = readInteger();  
+
+  -- 2 is prime
+  writeInteger(2);
+  writeStr(" "); 
+
+  counter = 1; -- count the prime numbers found
+  -- check only odd numbers for primality  
+  for num in [3: limit+1: 2]:  
+    if (prime(num)):  
+      counter = counter + 1;
+      writeInteger(num);
+      writeStr(" ");
+    endif;      
+  endfor;
+  
+   writeStr("\nThe total number of primes found is:");
+   writeInteger(counter);
+   writeStr("\n");   
+enddef;
+
+-- This is a program that implements and tests the quicksort algorithm
+-- to sort an array of integers.
+
+-- Global variable use by the random number generator function.
+next_random:integer;
+
+-- A simple random number generator.
+-- Change the global variable next_random 
+-- to produce a different sequence of pseudorandom numbers.
+
+def next()->integer:
+    next_random = (next_random * 1103515245 + 12345) % 2147483648;
+    if (next_random<0):
+        next_random = -next_random;
+    endif;
+    return next_random;
+enddef;
+
+-- Swap the elements of array a at positions i and j
+-- assuming that i and j are valid indices
+def swap(a[]:scalar, i:integer, j:integer):
+    temp:scalar;
+    temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+enddef;
+
+-- Impelementation of the quick sort algorithm
+def quickFSort(a[]:scalar, low:integer, high:integer):
+    pivot, i, j : integer;
+    if (low < high):
+        pivot = low;
+        i = low;
+        j = high;
+        while (i < j):
+            while(a[i] <= a[pivot] and i < high):
+                i = i+1;
+            endwhile;
+            while(a[j] > a[pivot]):
+                j = j-1;
+            endwhile;
+            if (i < j):
+                swap(a,i,j);
+            endif;
+        endwhile;
+        swap(a,pivot,j);
+        quickFSort(a, low, j - 1);
+        quickFSort(a, j + 1, high);
+    endif;
+enddef;
+
+-- Print contents of an array of integers
+def printArray(a[]:integer, size:integer):
+    for i in [0:size]:
+        writeInteger(a[i]);
+        if (i==size-1):
+            continue;
+        endif;
+        writeStr(", ");
+    endfor;
+    writeStr("\n");
+enddef;
+
+-- Print contents of an array of scalars
+def printFArray(a[]:scalar, size:integer):
+    for i in [0:size]:
+        writeScalar(a[i]);
+        if (i==size-1):
+            continue;
+        endif;
+        writeStr(", ");
+    endfor;
+    writeStr("\n");
+enddef;
+
+-- Test quickSort
+def main():
+    const aSize = 100:integer;
+
+    writeStr("Give a seed for the random number generator: ");
+    readInteger(next_random);
+
+    -- Create an array of random numbers from 0 to 999 using comprehension
+    a := [next()%1000 for i:100]:integer;
+    
+    -- Create an array for half values of a using comprehension
+    f := [x/2.0 for x:integer in a of 100]: scalar;
+    
+    writeStr("Random array generated: ");
+    printFArray(f,aSize);
+
+    quickFSort(f,0,aSize-1);
+
+    writeStr("Sorted array: ");
+    printFArray(f,aSize);
+enddef;
+
+-- This is a program that implements and tests the quicksort algorithm
+-- to sort an array of integers.
+
+-- Global variable use by the random number generator function.
+next_random:integer;
+
+-- A simple random number generator.
+-- Change the global variable next_random 
+-- to produce a different sequence of pseudorandom numbers.
+
+def next()->integer:
+    next_random = (next_random * 1103515245 + 12345) % 2147483648;
+    if (next_random<0):
+        next_random = -next_random;
+    endif;
+    return next_random;
+enddef;
+
+-- Swap the elements of array a at positions i and j
+-- assuming that i and j are valid indices
+def swap(a[]:integer, i:integer, j:integer):
+    temp:integer;
+    temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+enddef;
+
+-- Impelementation of the quick sort algorithm
+def quickSort(a[]:integer, low:integer, high:integer) -> void:
+    pivot, i, j : integer;
+    if (low < high):
+        pivot = low;
+        i = low;
+        j = high;
+        while (i < j):
+            while(a[i] <= a[pivot] and i < high):
+                i = i+1;
+            endwhile;
+            while(a[j] > a[pivot]):
+                j = j-1;
+            endwhile;
+            if (i < j):
+                swap(a,i,j);
+            endif;
+        endwhile;
+        swap(a,pivot,j);
+        quickSort(a, low, j - 1);
+        quickSort(a, j + 1, high);
+    endif;
+enddef;
+
+-- Print contents of an array
+def printArray(a[]:integer, size:integer):
+    for i in [0:size]:
+        writeInteger(a[i]);
+        if (i==size-1):
+            continue;
+        endif;
+        writeStr(", ");
+    endfor;
+    writeStr("\n");
+enddef;
+
+-- Test quickSort
+def main():
+    const aSize = 100:integer;
+
+    a[100]:integer;
+
+    writeStr("Give a seed for the random number generator: ");
+    readInteger(next_random);
+
+    -- Create an array of random numbers from 0 to 999
+    for i in [0:aSize]:
+        a[i] = next() % 1000;
+    endfor;
+    
+    writeStr("Random array generated: ");
+    printArray(a,aSize);
+
+    quickSort(a,0,aSize-1);
+
+    writeStr("Sorted array: ");
+    printArray(a,aSize);
+enddef;
+
+-- This is a program that implements and tests the quicksort algorithm
+-- to sort an array of integers.
+
+-- A simple random number generator.
+-- To use it, declare a RandomNumberGenerator and define 
+-- 1. The initial value of #number (this corresopnds to the seed of the generator).
+-- 2. The value of #max_int ( it corresponds to the maximum value returned by the generator).
+-- Then, to get a random number, call the next() method and use the returned value.
+comp RandomNumberGenerator:
+    #number:integer;
+    def next()->integer:
+        #number = (#number * 1103515245 + 12345) % 2147483648;
+        if (#number<0):
+            #number = -#number;
+        endif;
+        return #number;
+    enddef;
+endcomp;
+
+-- Swap the elements of array a at positions i and j
+-- assuming that i and j are valid indices
+def swap(a[]:integer, i:integer, j:integer):
+    temp:integer;
+    temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+enddef;
+
+-- Impelementation of the quick sort algorithm
+def quickSort(a[]:integer, low:integer, high:integer) -> void:
+    pivot, i, j : integer;
+    if (low < high):
+        pivot = low;
+        i = low;
+        j = high;
+        while (i < j):
+            while(a[i] <= a[pivot] and i < high):
+                i = i+1;
+            endwhile;
+            while(a[j] > a[pivot]):
+                j = j-1;
+            endwhile;
+            if (i < j):
+                swap(a,i,j);
+            endif;
+        endwhile;
+        swap(a,pivot,j);
+        quickSort(a, low, j - 1);
+        quickSort(a, j + 1, high);
+    endif;
+enddef;
+
+-- Print contents of an array
+def printArray(a[]:integer, size:integer):
+    for i in [0:size]:
+        writeInteger(a[i]);
+        if (i==size-1):
+            continue;
+        endif;
+        writeStr(", ");
+    endfor;
+    writeStr("\n");
+enddef;
+
+-- Test quickSort
+def main():
+    const aSize = 100:integer;
+
+    a[100]:integer;
+    rand: RandomNumberGenerator;
+
+    writeStr("Give a seed for the random number generator: ");
+    readInteger(rand.#number);
+
+    -- Create an array of random numbers from 0 to 999
+    for i in [0:aSize]:
+        a[i] = rand.next() % 1000;
+    endfor;
+    
+    writeStr("Random array generated: ");
+    printArray(a,aSize);
+
+    quickSort(a,0,aSize-1);
+
+    writeStr("Sorted array: ");
+    printArray(a,aSize);
+enddef;
+
+-- This is a program that reverses an integer array using comprehension to initialize it.
+
+-- Swap the elements of array a at positions i and j
+-- assuming that i and j are valid indices
+def swap(a[]:integer, i:integer, j:integer):
+    temp:integer;
+    temp = a[i];
+    a[i] = a[j];
+    a[j] = temp;
+enddef;
+
+-- Print contents of an array of integers
+def printArray(a[]:integer, size:integer):
+    for i in [0:size]:
+        writeInteger(a[i]);
+        if (i==size-1):
+            continue;
+        endif;
+        writeStr(", ");
+    endfor;
+    writeStr("\n");
+enddef;
+
+def main():
+    k: integer;
+
+    -- Create an array of integers using comprehension
+    a := [i+1 for i:100]:integer;
+
+    writeStr("Array generated: ");
+    printArray(a,100);
+
+    -- Reverse the array
+    for k in [0:50]:
+        swap(a,k,99-k);
+    endfor;
+
+    writeStr("Reversed array: ");
+    printArray(a,100);
+enddef;
+
+-- File: useless.ka
+-- A piece of Kappa code for demonstration purposes
+
+@defmacro N -100
+
+a, b: integer;
+
+def cube(i: integer)-> integer:
+   return i*i*i;
+enddef;
+   
+def add(n: integer, k: integer)-> integer:
+   j: integer;
+  
+   j = (N-n) + cube(k);
+   writeInteger(j);
+   return j;
+enddef;
+
+def main(): 
+   a = readInteger();
+   b = readInteger();
+   add(a, b); -- Here you can see some dummy comments!
+enddef;

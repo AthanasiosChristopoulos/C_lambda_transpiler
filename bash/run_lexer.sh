@@ -8,7 +8,7 @@ mkdir -p generated
 
 echo "Running Flex..."
 
-flex -o generated/lex.yy.c phase_1/lexer_alone.l
+flex -o generated/lex.yy.c only_lexer_code/lexer_alone.l
 
 if [ $? -ne 0 ]; then
     echo "Flex encountered an error. Stopping script."
@@ -26,4 +26,4 @@ fi
 
 echo "Running the program with test_lexer.la..."
 
-./generated/mylexer < phase_1/test_lexer.la
+./generated/mylexer < only_lexer_code/test_lexer.la

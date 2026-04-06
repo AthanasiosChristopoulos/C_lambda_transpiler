@@ -1,0 +1,68 @@
+-- Simple Fibonacci Calculator and Number Analyzer
+-- A small program to generate Fibonacci numbers and analyze them
+
+-- Global variables
+fib_results[15]: integer;
+isOdd[15]: bool;
+
+-- Calculate if a number is odd
+def isNumberOdd(n: integer) -> bool:
+    return n % 2 != 0;
+enddef;
+
+-- Calculate Fibonacci number recursively
+def fibonacci(n: integer) -> integer:
+    if (n <= 1):
+        return n;
+    endif;
+    
+    return fibonacci(n-1) + fibonacci(n-2);
+enddef;
+
+-- Calculate and store first N Fibonacci numbers
+def calculateFibonacciSequence(count: integer):
+    for i in [0:count]:
+        fib_results[i] = fibonacci(i);
+        isOdd[i] = isNumberOdd(fib_results[i]);
+    endfor;
+enddef;
+
+-- Print Fibonacci sequence with analysis
+def printFibonacciAnalysis(count: integer):
+    writeStr("Fibonacci Sequence Analysis:\n");
+    writeStr("Index\tNumber\tIs Odd?\n");
+    
+    sum: integer;
+    sum = 0;
+    
+    for i in [0:count]:
+        writeInteger(i);
+        writeStr("\t");
+        writeInteger(fib_results[i]);
+        writeStr("\t");
+        
+        if (isOdd[i]):
+            writeStr("Yes");
+        else:
+            writeStr("No");
+        endif;
+        
+        writeStr("\n");
+        
+        sum = sum + fib_results[i];
+    endfor;
+    
+    writeStr("\nSum of sequence: ");
+    writeInteger(sum);
+    writeStr("\n");
+enddef;
+
+-- Main function
+def main():
+    const SEQUENCE_LENGTH = 10: integer;
+    
+    writeStr("Generating Fibonacci sequence...\n");
+    calculateFibonacciSequence(SEQUENCE_LENGTH);
+    
+    printFibonacciAnalysis(SEQUENCE_LENGTH);
+enddef;

@@ -1,0 +1,10 @@
+-- My first Lambda program
+
+
+@defmacro message "Hello world!\n"
+@defmacro N -200
+
+def main():
+    writeStr(message);
+    print(N)
+enddef;

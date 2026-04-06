@@ -1,0 +1,114 @@
+-- A simple program that reads integers, performs calculations, sorts them, and prints results.
+
+-- Global variables
+numOfElements: integer;
+numbers[100]: integer;
+
+-- Read an array of integers from user
+
+def readNumbers()->integer:
+  n, i: integer;
+  
+  writeStr("Enter the number of elements (up to 100): ");
+  n = readInteger();
+  
+  for i in [0:n]:
+    writeStr("Enter number ");
+    writeInteger(i + 1);
+    writeStr(": ");
+    numbers[i] = readInteger();
+  endfor;
+
+  return n;
+enddef;
+
+-- Calculate the sum of an array
+
+def calculateSum(n: integer)->integer:
+  i, sum: integer;
+  sum = 0;
+
+  for i in [0:n]:
+    sum = sum + numbers[i];
+  endfor;
+
+  return sum;
+enddef;
+
+-- Find the maximum value in an array
+
+def findMax(n: integer)->integer:
+  i, max: integer;
+  max = numbers[0];
+
+  for i in [1:n]:
+    if (numbers[i] > max):
+      max = numbers[i];
+    endif;
+  endfor;
+
+  return max;
+enddef;
+
+-- Sort an array using a simple bubble sort
+
+def sortArray(n: integer):
+  i, j, temp: integer;
+
+  for i in [0:n-1]:
+    for j in [0:n-i-1]:
+      if (numbers[j] > numbers[j+1]):
+        temp = numbers[j];
+        numbers[j] = numbers[j+1];
+        numbers[j+1] = temp;
+      endif;
+    endfor;
+  endfor;
+enddef;
+
+-- Print the array
+
+def printArray(n: integer):
+  i: integer;
+
+  writeStr("Numbers: ");
+  for i in [0:n]:
+    writeInteger(numbers[i]);
+    if (i < n - 1):
+      writeStr(", ");
+    endif;
+  endfor;
+  writeStr("\n");
+enddef;
+
+-- Main function
+
+def main():
+  sum, max: integer;
+  avg: scalar;
+
+  numOfElements = readNumbers();
+
+  sum = calculateSum(numOfElements);
+  max = findMax(numOfElements);
+  avg = sum / numOfElements;
+
+  writeStr("\nOriginal Array:\n");
+  printArray(numOfElements);
+
+  writeStr("\nSorted Array:\n");
+  sortArray(numOfElements);
+  printArray(numOfElements);
+
+  writeStr("\nSum: ");
+  writeInteger(sum);
+  writeStr("\n");
+
+  writeStr("Average: ");
+  writeScalar(avg);
+  writeStr("\n");
+
+  writeStr("Maximum: ");
+  writeInteger(max);
+  writeStr("\n");
+enddef;
